@@ -5,17 +5,17 @@ CREATE DATABASE inventory_db;
 USE inventory_db;
 
 CREATE TABLE ORDER_PLACEMENT (
-	branch_no       SMALLINT            NOT NULL,
+    branch_no       SMALLINT            NOT NULL,
     supplier_name   VARCHAR(25)         NOT NULL,
     order_no        INT AUTO_INCREMENT  NOT NULL,
 
     FOREIGN KEY (branch_no) REFERENCES BRANCH(branch_no),
     FOREIGN KEY (supplier_name) REFERENCES SUPPLIER(supplier_no),
     FOREIGN KEY (order_no) REFERENCES ORDER_(order_no)
-    PRIMARY KEY (BranchNo,SupplierName,OrderNo));
+    PRIMARY KEY (branch_no, supplier_name, order_no));
     
 CREATE TABLE ORDER_CONTAINS (
-	order_no    INT AUTO_INCREMENT  NOT NULL,
+    order_no    INT AUTO_INCREMENT  NOT NULL,
     item_code   SMALLINT            NOT NULL,
     quantity    SMALLINT            NOT NULL,
 
@@ -24,7 +24,7 @@ CREATE TABLE ORDER_CONTAINS (
     PRIMARY KEY (order_no, item_code));
     
 CREATE TABLE OFFERS (
-	branch_no    SMALLINT    NOT NULL,
+    branch_no    SMALLINT    NOT NULL,
     item_code    SMALLINT    NOT NULL,
 
     FOREIGN KEY (branch_no) REFERENCES BRANCH(branch_code),
@@ -32,7 +32,7 @@ CREATE TABLE OFFERS (
     PRIMARY KEY (branch_no, item_code));
     
 CREATE TABLE BELONGS_TO (
-	purchase_no SMALLINT    NOT NULL,
+    purchase_no SMALLINT    NOT NULL,
     item_code   SMALLINT    NOT NULL,
 
     FOREIGN KEY (purchase_no) REFERENCES PURCHASE(purchase_no),
