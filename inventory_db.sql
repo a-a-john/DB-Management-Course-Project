@@ -1,1 +1,39 @@
 -- SQL Code here
+
+CREATE DATABASE inventory_db;
+
+USE inventory_db;
+
+CREATE TABLE ORDER_PLACEMENT (
+	BranchNo SMALLINT NOT NULL,
+    SupplierName VARCHAR(25) NOT NULL,
+    OrderNo INT AUTO_INCREMENT NOT NULL,
+    FOREIGN KEY (BranchNo) REFERENCES BRANCH(BranchCode),
+    FOREIGN KEY (SupplierName) REFERENCES SUPPLIER(SupplierName),
+    FOREIGN KEY (OrderNo) REFERENCES ORDER_(OrderNo),
+    PRIMARY KEY (BranchNo,SupplierName,OrderNo));
+    
+CREATE TABLE CONTAINS_ (
+	OrderNo INT AUTO_INCREMENT NOT NULL,
+    ItemCode SMALLINT NOT NULL,
+    Quantity TINYINT NOT NULL,
+    FOREIGN KEY (OrderNo) REFERENCES ORDER_(OrderNo),
+    FOREIGN KEY (ItemCode) REFERENCES ITEM(ItemCode),
+    PRIMARY KEY (OrderNo, ItemCode));
+    
+CREATE TABLE OFFERS (
+	BranchNo SMALLINT NOT NULL,
+    ItemCode SMALLINT NOT NULL,
+    FOREIGN KEY (BranchNo) REFERENCES BRANCH(BranchCode),
+    FOREIGN KEY (ItemCode) REFERENCES ITEM(ItemCode),
+    PRIMARY KEY (BranchNo, ItemCode));
+    
+CREATE TABLE BELONGS_TO (
+	PurchaseNo SMALLINT NOT NULL,
+    ItemCode SMALLINT NOT NULL,
+    FOREIGN KEY (PurchaseNo) REFERENCES PURCHASE(PurchaseNo),
+    FOREIGN KEY (ItemCode) REFERENCES ITEM(ItemCode),
+    PRIMARY KEY (PurchaseNo, ItemCode));
+	
+    
+    
