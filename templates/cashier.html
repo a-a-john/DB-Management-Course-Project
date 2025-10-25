@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h1>Cashier</h1>
+    <p>Enter the item code of the item sold, alongside its quantity.</p>
+    
+    <form method="POST" class="form-card">
+        <div class="form-group">
+            <label for="cashier_item_code">Item Code</label>
+            <input type="number" id="cashier_item_code" name="item_code" required>
+        </div>
+
+        <div class="form-group">
+            <label for="cashier_quantity">Quantity</label>
+            <input type="number" id="cashier_quantity" name="quantity" min="1" required>
+        </div>
+
+        <button type="submit">Submit Sale</button>
+    </form>
+
+</div>
+
+{% if submitted and submitted|length > 0%}
+    <div class="submit_card">
+        <h2 class="submit_card_title">Sales Logs</h2>
+
+        <div class="submit_card_grid">
+            {% for entry in submitted %}
+            <div class="submit_card_text"><em>Item Code:</em> {{ entry.item_code }}</div>
+            <div class="submit_card_text"><em>Quantity:</em> {{ entry.quantity }}</div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}
