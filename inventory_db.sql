@@ -4,7 +4,7 @@ CREATE TABLE EMPLOYEE (
     emp_name    VARCHAR(100)        NOT NULL,
     email       VARCHAR(320)        NOT NULL,
     job_type    VARCHAR(20)         NOT NULL,
-    branch_code INT                 NOT NULL,
+    branch_no   BIGINT              NOT NULL,
 
     PRIMARY KEY (employee_id)
 );
@@ -16,7 +16,7 @@ CREATE TABLE SUPERMARKET_COMPANY (
 );
 
 CREATE TABLE BRANCH (
-    branch_code     BIGINT          NOT NULL,
+    branch_no       BIGINT          NOT NULL,
     branch_location VARCHAR(MAX)    NOT NULL,
     company_name    VARCHAR(100)    NOT NULL,
 
