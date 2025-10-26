@@ -1,3 +1,5 @@
+/*DROP DATABASE IF EXISTS inventory_db;*/
+
 CREATE DATABASE IF NOT EXISTS inventory_db;
 USE inventory_db;
 
@@ -48,11 +50,11 @@ CREATE TABLE ITEMS (
     price       DECIMAL(10,2)       NOT NULL,
     quantity    SMALLINT            NOT NULL,
     item_name   VARCHAR(100)        NOT NULL,
-    GMFlag      TINYINT(1)          NOT NULL,
-    FFlag       TINYINT(1)          NOT NULL,
-    HFlag       TINYINT(1)          NOT NULL,
-    TFlag       TINYINT(1)          NOT NULL,
-    HBFlag      TINYINT(1)          NOT NULL,
+    GMFlag      TINYINT(1)          NOT NULL DEFAULT 0,
+    FFlag       TINYINT(1)          NOT NULL DEFAULT 0,
+    HFlag       TINYINT(1)          NOT NULL DEFAULT 0,
+    TFlag       TINYINT(1)          NOT NULL DEFAULT 0,
+    HBFlag      TINYINT(1)          NOT NULL DEFAULT 0,
 
     PRIMARY KEY (item_code)
 );
