@@ -56,14 +56,13 @@ CREATE TABLE ITEMS (
 
     PRIMARY KEY (item_code)
 );
-    
+
 CREATE TABLE PURCHASE (
     purchase_no         SMALLINT            NOT NULL,
     amount_received     DECIMAL(10,2)       NOT NULL,
 
     PRIMARY KEY (purchase_no)
 );
-    
 
 CREATE TABLE ORDER_PLACEMENT (
     branch_no       BIGINT          NOT NULL,
@@ -89,15 +88,16 @@ CREATE TABLE ORDER_CONTAINS (
 );
     
 CREATE TABLE OFFERS (
-    branch_no   BIGINT      NOT NULL,
-    item_code   SMALLINT    NOT NULL,
+    branch_no       BIGINT      NOT NULL,
+    item_code       SMALLINT    NOT NULL,
+    local_quantity  SMALLINT    NOT NULL,
 
     FOREIGN KEY (branch_no) REFERENCES BRANCH(branch_no),
     FOREIGN KEY (item_code) REFERENCES ITEMS(item_code),
 
     PRIMARY KEY (branch_no, item_code)
 );
-    
+
 CREATE TABLE BELONGS_TO (
     purchase_no SMALLINT    NOT NULL,
     item_code   SMALLINT    NOT NULL,
