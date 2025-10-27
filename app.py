@@ -152,7 +152,7 @@ def add_dummy_items(count: int):
             
             cursor.execute(insert_query, values)
     
-    print("all new items inserted.")
+    print(f"{count} DUMMY ITEMS INSERTED INTO ITEMS TABLE")
     cursor.close()    
     db.commit()
         
@@ -165,6 +165,7 @@ if __name__ == "__main__":
     db = get_db_connection()
     cursor = db.cursor()
     
+    cursor.execute("DELETE FROM SUPPLY_ORDER;")
     cursor.execute("DELETE FROM ORDER_CONTAINS;")
     cursor.execute("DELETE FROM ITEMS;")
     cursor.close()
