@@ -88,4 +88,4 @@ def get_random_item():
         
         generated_items[item] = item_code
         
-    return {"item_name" : item, "item_code" : item_code, "flag" : get_flag(item_index)}
+    return {"item_name" : item, "item_code" : generated_items[item], "flag" : get_flag(item_index)}
