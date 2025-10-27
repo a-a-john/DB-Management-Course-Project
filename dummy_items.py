@@ -65,7 +65,7 @@ flags = {
 }
 
 def does_item_code_exist(code):
-    for item_name, item_code in generated_items.items():
+    for _, item_code in generated_items.items():
         if item_code == code:
             return True
     return False

@@ -165,6 +165,7 @@ if __name__ == "__main__":
     db = get_db_connection()
     cursor = db.cursor()
     
+    cursor.execute("DELETE FROM ORDER_CONTAINS;")
     cursor.execute("DELETE FROM ITEMS;")
     cursor.close()
     db.commit()

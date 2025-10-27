@@ -79,7 +79,7 @@ CREATE TABLE ORDER_PLACEMENT (
 );
     
 CREATE TABLE ORDER_CONTAINS (
-    order_no    INT         NOT NULL,
+    order_no    INT         NOT NULL,   
     item_code   SMALLINT    NOT NULL,
     quantity    SMALLINT    NOT NULL,
 
