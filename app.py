@@ -96,6 +96,10 @@ def manager():
                 (order_no, item_code, quantity)
             )
 
+            # update quantity for general items
+            cursor.execute("UPDATE ITEMS SET quantity = %s WHERE item_code = %s", (quantity, item_code))
+            db.commit()
+
             db.commit()
 
             curr_order_logs.append({
