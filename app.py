@@ -34,32 +34,85 @@ def index():
 @app.route("/cashier", methods=["GET", "POST"])
 def cashier():
     if request.method == "POST":
-        item_code = request.form.get("item_code") # you can use this for your SQL connection
-        quantity = request.form.get("quantity") # Same as this
-        
-        # We can check if an item exists here later
-        
-        curr_cashier_logs.append({
-            "item_code": item_code,
-            "quantity": quantity
-        })
-        
+        item_code = request.form.get("item_code")
+        quantity = int(request.form.get("quantity"))
+
+        db = get_db_connection()
+        cursor = db.cursor()
+
+        try:
+            # check if the item is there
+            cursor.execute("SELECT quantity FROM ITEMS WHERE item_code = %s", (item_code,))
+            result = cursor.fetchone()
+
+            if result:
+                current_qty = result[0]
+                if current_qty >= quantity:
+                    new_qty = current_qty - quantity
+                    cursor.execute("UPDATE ITEMS SET quantity = %s WHERE item_code = %s", (new_qty, item_code))
+                    db.commit()
+                    print("Purchase recorded successfully!")
+                else:
+                    print("Error: Insufficent stock.")
+            else:
+                print("Error: Item not found.")
+
+            curr_cashier_logs.append({
+                "item_code": item_code,
+                "quantity": quantity
+            })
+
+        except mysql.connector.Error as err:
+            print(f"Database Error: {err}")
+            db.rollback()
+
+        finally:
+            cursor.close()
+            db.close()
+
     return render_template("cashier.html", page="cashier", title="Cashier", submitted=curr_cashier_logs)
+
 
 @app.route("/manager", methods=["GET", "POST"])
 def manager():
     if request.method == "POST":
-        item_code = request.form.get("item_code") # you can use this for your SQL connection
-        quantity = request.form.get("quantity") # Same as this
-        
-        # We can check if an item exists here later
-        
-        curr_order_logs.append({
-            "item_code": item_code,
-            "quantity": quantity
-        })
-        
+        item_code = request.form.get("item_code")
+        quantity = request.form.get("quantity")
+
+        db = get_db_connection()
+        cursor = db.cursor()
+
+        try:
+            # insert new supply order
+            cursor.execute(
+                "INSERT INTO SUPPLY_ORDER (amount_paid, status) VALUES (%s, %s)",
+                (0.00, "placed")
+            )
+            order_no = cursor.lastrowid  # ID of new order
+
+            # insert and quantity into ORDER_CONTAINS
+            cursor.execute(
+                "INSERT INTO ORDER_CONTAINS (order_no, item_code, quantity) VALUES (%s, %s, %s)",
+                (order_no, item_code, quantity)
+            )
+
+            db.commit()
+
+            curr_order_logs.append({
+                "item_code": item_code,
+                "quantity": quantity
+            })
+
+        except mysql.connector.Error as err:
+            print(f"Database Error: {err}")
+            db.rollback()
+
+        finally:
+            cursor.close()
+            db.close()
+
     return render_template("manager.html", page="manager", title="Manager", submitted=curr_order_logs)
+
 
 @app.route("/inventory")
 def inventory():
