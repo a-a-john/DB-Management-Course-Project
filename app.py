@@ -97,8 +97,8 @@ def manager():
             )
 
             # update quantity for general items
-            cursor.execute("UPDATE ITEMS SET quantity = %s WHERE item_code = %s", (quantity, item_code))
-            db.commit()
+            update_query = f"UPDATE ITEMS SET quantity = quantity + {quantity} WHERE {item_code} = %s"
+            cursor.execute(update_query, (item_code,))    
 
             db.commit()
 
