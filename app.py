@@ -140,7 +140,7 @@ def add_dummy_items(count: int):
             cursor.execute(update_query, (search_value,))            
 
         else:
-            insert_query = f"INSERT INTO {table_name} (item_name, item_code, quantity, {random_item["flag"]}, price) VALUES (%s, %s, %s, %s, %s)"
+            insert_query = f"INSERT INTO {table_name} (item_name, item_code, quantity, {random_item['flag']}, price) VALUES (%s, %s, %s, %s, %s)"
             values = (
                         random_item["item_name"],   # item_name
                         random_item["item_code"],   # item_code
