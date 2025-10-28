@@ -18,6 +18,7 @@ curr_order_logs = []
 
 def get_db_connection():
     
+    # CHANGE TO SQL ALCHEMY
     return mysql.connector.connect(
         host=HOST,
         user=USER,
@@ -96,9 +97,9 @@ def manager():
                 (order_no, item_code, quantity)
             )
 
-            # update quantity for general items
-            update_query = f"UPDATE ITEMS SET quantity = quantity + {quantity} WHERE {item_code} = %s"
-            cursor.execute(update_query, (item_code,))    
+            # update quantity for that specific item
+            update_query = "UPDATE ITEMS SET quantity = quantity + %s WHERE item_code = %s"
+            cursor.execute(update_query, (quantity, item_code))
 
             db.commit()
 
