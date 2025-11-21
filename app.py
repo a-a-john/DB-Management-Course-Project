@@ -35,7 +35,7 @@ class Branch(db.Model):
     company_name = db.Column(db.String(100), db.ForeignKey("SUPERMARKET_COMPANY.company_name"), nullable=False)
 
     company = db.relationship("SupermarketCompany", back_populates="branches")
-    employees = db.relationship("Employee", back_populates="branch")
+    # employees = db.relationship("Employee", back_populates="branch")
     order_placements = db.relationship("OrderPlacement", back_populates="branch")
     offers = db.relationship("Offers", back_populates="branch")
 
@@ -46,9 +46,10 @@ class Employee(db.Model):
     emp_name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(320), unique=True, nullable=False)
     job_type = db.Column(db.String(20), nullable=False)
-    branch_no = db.Column(db.BigInteger, db.ForeignKey("BRANCH.branch_no"), nullable=False)
+    # removed db.ForeignKey("BRANCH.branch_no"): change back when we implemented branches
+    branch_no = db.Column(db.BigInteger, nullable=False)
 
-    branch = db.relationship("Branch", back_populates="employees")
+    # branch = db.relationship("Branch", back_populates="employees")
 
 class Supplier(db.Model):
     __tablename__ = "SUPPLIER"
@@ -136,10 +137,30 @@ class BelongsTo(db.Model):
 curr_cashier_logs = []
 curr_order_logs = []
 
+@app.route("/", methods=["GET", "POST"])
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
 
-@app.route("/")
-def index():
-    return render_template("index.html", page="index", title="Home")
+        # Save data temporarily (for now)
+        entered_login_data = {
+            "email": email,
+            "password": password
+        }
+
+        print("Received login data:", entered_login_data)
+
+        # In the future: authenticate user here
+        return render_template("home.html", page="home", title="Home", login_data=entered_login_data)
+
+    return render_template("login.html", title="Login")
+
+
+@app.route("/home")
+def home():
+    return render_template("home.html", page="home", title="Home")
 
 
 @app.route("/cashier", methods=["GET", "POST"])
@@ -237,10 +258,49 @@ def add_dummy_items(count: int):
     print(f"{count} DUMMY ITEMS INSERTED INTO ITEMS TABLE")
 
 
+def create_initial_employees():
+    # Mitarbeiter-Definitionen
+    employees_data = [
+        {
+            "employee_id": 1,
+            "emp_name": "Adhira John",
+            "email": "adhira.john@inventory.com",
+            "job_type": "Manager",
+            "branch_no": 1
+        },
+        {
+            "employee_id": 2,
+            "emp_name": "Taha Gummy",
+            "email": "taha.gummy@inventory.com",
+            "job_type": "Manager",
+            "branch_no": 2
+        },
+        {
+            "employee_id": 3,
+            "emp_name": "Leonie Mertens",
+            "email": "leonie.mertens@inventory.com",
+            "job_type": "Cashier",
+            "branch_no": 2
+        }
+    ]
+
+    for emp_data in employees_data:
+        # Prüfen, ob Mitarbeiter bereits existiert
+        existing = Employee.query.filter_by(employee_id=emp_data["employee_id"]).first()
+        
+        if not existing:
+            new_employee = Employee(**emp_data)
+            db.session.add(new_employee)
+    
+    db.session.commit()
+    print("Initial employees ensured in database.")
+
+
 
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()  # ensures tables exist
         add_dummy_items(1000)
+        create_initial_employees()
 
     app.run(debug=True)
