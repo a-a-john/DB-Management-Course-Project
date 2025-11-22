@@ -1,3 +1,4 @@
+import json
 import os
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
@@ -10,6 +11,9 @@ HOST = os.getenv("HOST")
 USER = os.getenv("USER")
 PASSWORD = os.getenv("PASSWORD")
 DATABASE = os.getenv("DATABASE")
+
+with open("users.json", "r") as f:
+    USER_CREDENTIALS = json.load(f)["users"]
 
 app = Flask(__name__, static_folder='styles')
 
@@ -145,15 +149,18 @@ def login():
         password = request.form.get("password")
 
         # Save data temporarily (for now)
-        entered_login_data = {
-            "email": email,
-            "password": password
-        }
+        # Check credentials
+        valid_user = next(
+            (user for user in USER_CREDENTIALS if user["email"] == email and user["password"] == password),
+            None
+        )
 
-        print("Received login data:", entered_login_data)
-
-        # In the future: authenticate user here
-        return render_template("home.html", page="home", title="Home", login_data=entered_login_data)
+        if valid_user:
+            print("Login successful:", email)
+            return render_template("home.html", page="home", title="Home", login_data=valid_user)
+        else:
+            print("Login failed.")
+            return render_template("login.html", title="Login", error="Invalid email or password.")
 
     return render_template("login.html", title="Login")
 
