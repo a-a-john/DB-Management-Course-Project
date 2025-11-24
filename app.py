@@ -1,6 +1,6 @@
 import json
 import os
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from dummy_items import get_random_item
@@ -157,7 +157,21 @@ def login():
 
         if valid_user:
             print("Login successful:", email)
-            return render_template("home.html", page="home", title="Home", login_data=valid_user)
+            employee_record = Employee.query.filter_by(email=email).first()
+            if employee_record:
+                job_type = employee_record.job_type
+                # session["employee_email"] = employee_record.email
+                # session["employee_name"] = employee_record.emp_name
+                print("Stored job type:", job_type)
+
+                if job_type.lower() == "cashier":
+                    return redirect(url_for("cashier"))
+
+                if job_type.lower() == "manager":
+                    return redirect(url_for("manager"))
+
+            return redirect(url_for("login"))
+
         else:
             print("Login failed.")
             return render_template("login.html", title="Login", error="Invalid email or password.")
