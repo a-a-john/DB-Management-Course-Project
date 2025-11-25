@@ -54,6 +54,7 @@ supermarket_items = [
     "hairbrush", "hair ties", "body lotion", "perfume", "aftershave", "cotton rounds"
 ]
 
+BRANCHES = [1, 2] 
 
 generated_items = {}
 flags = {
@@ -87,5 +88,12 @@ def get_random_item():
             item_code = random.randint(1000, 5000)
         
         generated_items[item] = item_code
+
+    branch_quantities = {}
+    for branch_id in BRANCHES:
+        quantity = random.randint(5, 50)
+        branch_quantities[branch_id] = quantity
+
+    global_quantity = sum(branch_quantities.values())
         
-    return {"item_name" : item, "item_code" : generated_items[item], "flag" : get_flag(item_index)}
+    return {"item_name" : item, "item_code" : generated_items[item], "flag" : get_flag(item_index), "branch_quantities": branch_quantities, "global_quantity": global_quantity}
