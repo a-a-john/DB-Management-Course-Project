@@ -106,7 +106,7 @@ class BranchItems(db.Model):
 class Purchase(db.Model):
     __tablename__ = "PURCHASE"
 
-    purchase_no = db.Column(db.SmallInteger, primary_key=True)
+    purchase_no = db.Column(db.Integer, primary_key=True, autoincrement=True)
     amount_received = db.Column(db.Numeric(10, 2), nullable=False)
 
     belongs_to = db.relationship("BelongsTo", back_populates="purchase")
@@ -145,7 +145,7 @@ class Offers(db.Model):
 class BelongsTo(db.Model):
     __tablename__ = "BELONGS_TO"
 
-    purchase_no = db.Column(db.SmallInteger, db.ForeignKey("PURCHASE.purchase_no"), primary_key=True)
+    purchase_no = db.Column(db.Integer, db.ForeignKey("PURCHASE.purchase_no"), primary_key=True)
     item_code = db.Column(db.SmallInteger, db.ForeignKey("ITEMS.item_code"), primary_key=True)
 
     purchase = db.relationship("Purchase", back_populates="belongs_to")
@@ -205,25 +205,55 @@ def home():
 @app.route("/cashier", methods=["GET", "POST"])
 def cashier():
     if request.method == "POST":
-        item_code = request.form.get("item_code")
-        quantity = int(request.form.get("quantity"))
-        branch_id = db.session.get("branch_id")
-
         try:
-            branch_item = BranchItems.query.filter_by(branch_no=branch_id, item_code=item_code).first()
-            if branch_item: 
-                if branch_item.local_quantity >= quantity:
-                    branch_item.local_quantity -= quantity
-                    db.session.commit()
-                    print("Purchase recorded successfully!")
-                else:
-                    print("Not enough stock in this branch.")
-            else:
-                print("Error: Item not found.")
+            item_code = int(request.form.get("item_code"))
+            quantity = int(request.form.get("quantity"))
+            branch_id = session.get("branch_id")
 
+            # fetch item by item code
+            item = Item.query.filter_by(item_code=item_code).first()
+            if not item:
+                return render_template("cashier.html", page="cashier", title="Cashier",
+                                       submitted=curr_cashier_logs,
+                                       error=f"Item {item_code} does not exist.")
+
+            # fetch the same item as a branch item
+            branch_item = BranchItems.query.filter_by(
+                branch_no=branch_id,
+                item_code=item_code
+            ).first()
+
+            if not branch_item:
+                return render_template("cashier.html", page="cashier", title="Cashier",
+                                       submitted=curr_cashier_logs,
+                                       error=f"Item {item_code} not stocked in branch {branch_id}")
+
+            # check stock - if there is not enough to sell, return error
+            if branch_item.local_quantity < quantity:
+                return render_template("cashier.html", page="cashier", title="Cashier",
+                                       submitted=curr_cashier_logs,
+                                       error="Insufficient stock in branch.")
+
+            # decrease global and local quantities
+            item.quantity -= quantity
+            branch_item.local_quantity -= quantity
+            print(f"Updated Item {item_code}: global={item.quantity}, branch={branch_item.local_quantity}")
+
+            # create purchase and belongs to records
+            new_purchase = Purchase(amount_received=0.00)
+            db.session.add(new_purchase)
+            db.session.flush() # now new_purchase.purchase_no exists - again, not sure exactly how this works
+            belongs = BelongsTo(purchase_no=new_purchase.purchase_no, item_code=item_code)
+            db.session.add(belongs)
+
+            db.session.commit()
+
+            # log to screen
             curr_cashier_logs.append({
                 "item_code": item_code,
-                "quantity": quantity
+                "quantity": quantity,
+                "branch_no": branch_id,
+                "purchase_no": new_purchase.purchase_no
             })
 
         except Exception as e:
@@ -231,8 +261,6 @@ def cashier():
             print(f"Database Error: {e}")
 
     return render_template("cashier.html", page="cashier", title="Cashier", submitted=curr_cashier_logs)
-
-
 
 @app.route("/manager", methods=["GET", "POST"])
 def manager():
@@ -258,15 +286,15 @@ def manager():
             print(f"Updated Item {item_code}: global={item.quantity}, branch {branch_id}={branch_item.local_quantity}")
 
             # create supply order
-            new_order = SupplyOrder(amount_paid=0.00, status="placed")
+            new_order = SupplyOrder(amount_paid = 0.00, status = "placed")
             db.session.add(new_order)
             db.session.flush()  # get order_no - again, not sure exactly how this works
-            new_contain = OrderContains(order_no=new_order.order_no, item_code=item_code, quantity=quantity)
+            new_contain = OrderContains(order_no = new_order.order_no, item_code = item_code, quantity = quantity)
             db.session.add(new_contain)
 
             db.session.commit()
 
-            # log to scrren
+            # log to screen
             curr_order_logs.append({
                 "item_code": item_code,
                 "quantity": quantity,
