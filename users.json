@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "email": "adhira.john@inventory.com",
+      "password": "adhira1234"
+    },
+    {
+      "email": "taha.gummy@inventory.com",
+      "password": "taha1234"
+    },
+    {
+      "email": "leonie.mertens@inventory.com",
+      "password": "leonie1234"
+    }
+  ]
+}
