@@ -151,7 +151,7 @@ def add_dummy_items(count: int):
                         random_item["item_code"],   # item_code
                         1,                          # quantity starts at 1
                         1,                          # that flag column gets 1
-                        5.00,
+                        random_item["price"]        # price,
                     )
             
             
