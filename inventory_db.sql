@@ -59,6 +59,16 @@ CREATE TABLE ITEMS (
     PRIMARY KEY (item_code)
 );
 
+CREATE TABLE BRANCH_ITEMS (
+    branch_no       BIGINT NOT NULL,
+    item_code       SMALLINT NOT NULL,
+    local_quantity  INT NOT NULL DEFAULT 0,
+
+    PRIMARY KEY (branch_no, item_code),
+    FOREIGN KEY (branch_no) REFERENCES BRANCH(branch_no),
+    FOREIGN KEY (item_code) REFERENCES ITEMS(item_code)
+);
+
 CREATE TABLE PURCHASE (
     purchase_no         SMALLINT            NOT NULL,
     amount_received     DECIMAL(10,2)       NOT NULL,

@@ -19,3 +19,4 @@ env/
 *.sqlite3
 .DS_Store
 ./inventory_db.sql
+./testingBranchItems.sql
