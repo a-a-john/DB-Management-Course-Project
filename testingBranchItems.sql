@@ -1,9 +1,0 @@
-SELECT * FROM ITEMS;
-
-SELECT * 
-FROM BRANCH_ITEMS
-WHERE branch_no = 1;
-
-SELECT * 
-FROM BRANCH_ITEMS
-WHERE branch_no = 2;

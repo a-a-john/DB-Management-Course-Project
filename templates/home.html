@@ -1,27 +1,10 @@
-<!--
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ title }}</title>
-</head>
-<body>
-    <h1>Welcome to the Inventory System</h1>
-
-    {% if login_data %}
-        <p>Logged in as: {{ login_data.email }}</p>
-    {% endif %}
-</body>
-</html>
--->
-
 {% extends "base.html" %}
 {% block content %}
 <div class="card">
     <h1>Welcome</h1>
     <p>This so far is a test page for our inventory management system.</p>
-    {% if login_data %}
-        <p>Logged in as: {{ login_data.email }}</p>
+    {% if email %}
+        <p>Logged in as: {{ email }}</p>
     {% endif %}
 </div>
 {% endblock %}

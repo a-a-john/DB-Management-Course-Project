@@ -18,6 +18,8 @@ env/
 *.log
 *.sqlite3
 .DS_Store
+./inventory_db.sql
+./testingBranchItems.sql
 
 # maintainence instructions
 homw_to_maintain.txt

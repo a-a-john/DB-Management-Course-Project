@@ -183,10 +183,10 @@ def login():
                 print("Stored job type:", job_type)
 
                 if job_type.lower() == "cashier":
-                    return redirect(url_for("cashier"))
+                    return redirect(url_for("home", role="cashier", email=email))
 
                 if job_type.lower() == "manager":
-                    return redirect(url_for("manager"))
+                    return redirect(url_for("home", role="manager", email=email))
 
             return redirect(url_for("login"))
 
@@ -199,11 +199,15 @@ def login():
 
 @app.route("/home")
 def home():
-    return render_template("home.html", page="home", title="Home")
+    email = request.args.get("email")
+    role = request.args.get("role")
+    return render_template("home.html", page="home", title="Home", role=role, email=email)
 
 
 @app.route("/cashier", methods=["GET", "POST"])
 def cashier():
+    email = request.args.get("email")
+    role = request.args.get("role")
     if request.method == "POST":
         try:
             item_code = int(request.form.get("item_code"))
@@ -262,8 +266,11 @@ def cashier():
 
     return render_template("cashier.html", page="cashier", title="Cashier", submitted=curr_cashier_logs)
 
+
 @app.route("/manager", methods=["GET", "POST"])
 def manager():
+    email = request.args.get("email")
+    role = request.args.get("role")
     if request.method == "POST":
         try:
             item_code = int(request.form.get("item_code"))
@@ -305,13 +312,15 @@ def manager():
             db.session.rollback()
             print(f"Database Error: {e}")
 
-    return render_template("manager.html", page="manager", title="Manager", submitted=curr_order_logs)
+    return render_template("manager.html", page="manager", title="Manager", role=role, email=email, submitted=curr_order_logs)
 
 
 @app.route("/inventory")
 def inventory():
+    email = request.args.get("email")
+    role = request.args.get("role")
     items = Item.query.all()
-    return render_template("inventory.html", page="inventory", title="Inventory", items=items)
+    return render_template("inventory.html", page="inventory", title="Inventory", items=items, role=role, email=email)
 
 
 # dummy generator
@@ -350,11 +359,14 @@ def add_dummy_items(count: int):
         else:
             # if the item is totally new, create new item
             new_item = Item(
-                item_name=random_item["item_name"], item_code=item_code, quantity=1, price=5.00)
+                item_name=random_item["item_name"],
+                item_code=random_item["item_code"],
+                quantity=1,
+                price=random_item["price"],
+            )
 
-            # set flag if exists
-            flag_name = random_item.get("flag")
-            if flag_name and hasattr(new_item, flag_name):
+            flag_name = random_item["flag"]
+            if hasattr(new_item, flag_name):
                 setattr(new_item, flag_name, True)
 
             db.session.add(new_item)
