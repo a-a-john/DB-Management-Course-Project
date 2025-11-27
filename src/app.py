@@ -1,9 +1,10 @@
 import json
 import os
+from pathlib import Path
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
-from dummy_items import get_random_item
+from items import get_random_item
 
 # Load .env variables
 load_dotenv()
@@ -12,7 +13,8 @@ USER = os.getenv("USER")
 PASSWORD = os.getenv("PASSWORD")
 DATABASE = os.getenv("DATABASE")
 
-with open("users.json", "r") as f:
+
+with open(Path.cwd().absolute()/ "src/" / "users.json", "r") as f:
     USER_CREDENTIALS = json.load(f)["users"]
 
 app = Flask(__name__, static_folder='styles')
