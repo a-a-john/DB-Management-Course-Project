@@ -1,0 +1,21 @@
+Manually push changes to the public repo
+
+Whenever you finish a feature that’s OK to show publicly:
+
+Pull the changes into your public copy:
+
+git pull <private-repo-URL> main
+
+
+Remove any school-only files again if needed:
+
+git rm path/to/school_file
+git commit -m "Remove school-only files"
+
+
+Push to your public repo:
+
+git push origin main
+
+👍 This keeps commit history intact
+❗ Requires repeating the cleanup each time
