@@ -9,11 +9,23 @@
 <body>
 <header>
     <div class="brand">Inventory System</div>
+
     <nav>
-        <a href="/" class="{% if page == 'index' %}active{% endif %}">Home</a>
-        <a href="/cashier" class="{% if page == 'cashier' %}active{% endif %}">Cashier</a>
-        <a href="/manager" class="{% if page == 'manager' %}active{% endif %}">Manager</a>
-        <a href="/inventory" class="{% if page == 'inventory' %}active{% endif %}">Inventory</a>
+        {% if role == "cashier" %}
+            <a href="/home?role={{role}}&email={{email}}" class="{% if page == 'home' %}active{% endif %}">Home</a>
+            <a href="/cashier?role={{role}}&email={{email}}" class="{% if page == 'cashier' %}active{% endif %}">Bill Purchase</a>
+            <a href="/login">Logout</a>
+
+        {% elif role == "manager" %}
+            <a href="/home?role={{role}}&email={{email}}" class="{% if page == 'home' %}active{% endif %}">Home</a>
+            <a href="/inventory?role={{role}}&email={{email}}" class="{% if page == 'inventory' %}active{% endif %}">Inventory</a>
+            <a href="/manager?role={{role}}&email={{email}}" class="{% if page == 'manager' %}active{% endif %}">Place Order</a>
+            <a href="/login">Logout</a>
+
+        <!-- login page -->
+        {% else %}
+            <!-- no navigation for login page -->
+        {% endif %}
     </nav>
 </header>
 
